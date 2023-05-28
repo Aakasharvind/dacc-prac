@@ -18,6 +18,7 @@ sudo systemctl start mongod
 sudo systemctl status mongod 
 
 
+CRUD OPERATIONS
 
 db.students.insertMany([
   { id: 1, name: 'Ryan', gender: 'M' ,marks:70 },
@@ -36,3 +37,40 @@ db.student.remove({"lastname":"G"})
 db.student.find({},{"cgpa":1, _id:0})  //projection
 
 db.students.aggregate([{$group: {_id: "$gender", sumval : {$sum: "$marks"}}} ])
+
+
+
+
+REPLICATION
+
+
+  mkdir -p $home/mongo/data/db01
+   mongod --replSet dbrs --port 27021 --dbpath $home/mongo/data/db01
+  mkdir -p  $home/mongo/data/db02
+  mongod --replSet dbrs --port 27022 --dbpath $home/mongo/data/db02
+  mkdir -p $home/mongo/data/db03
+  mongod --replSet dbrs --port 27023 --dbpath $home/mongo/data/db03
+
+  mongosh --port 27021
+
+  rsconf={
+  _id:"dbrs",
+  members=[
+  {
+ _id:0,
+  host:"127.0.0.1:27021",
+  priority:3
+ }  ,{
+  _id:1,
+  host:"127.0.0.1:27022",
+ priority:1
+}  ,{
+  _id:2,
+  host:"127.0.0.1:27023",
+  priority:2
+
+  }]};
+
+  db.getMongo().setReadPref("primary")
+
+  rs.initiate(rsconf);
