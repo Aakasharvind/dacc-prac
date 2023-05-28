@@ -1,0 +1,38 @@
+MongoDB installation:
+wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | sudo apt-key add - 
+(Add reopsitory key of mongodb to apt keyring)
+sudo nano /etc/apt/sources.list.d/mongodb.list 
+(Add mongodb repository to our repository)
+
+Add this in the file:
+      deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse
+
+
+sudo apt update 
+sudo apt install mongodb-org 
+
+
+sudo systemctl enable mongod 
+sudo systemctl start mongod 
+
+sudo systemctl status mongod 
+
+
+
+db.students.insertMany([
+  { id: 1, name: 'Ryan', gender: 'M' ,marks:70 },
+  { id: 2, name: 'Joanna', gender: 'F' ,marks:70},
+  { id: 3, name: 'Prabhu', gender: 'M' ,marks:65},
+  { id: 4, name: 'Kanhaiyya', gender: 'M' ,marks:65},
+]);
+db.students.find({$and:[{"gender":'M' }, {"marks":{$lt:70}}]})
+
+db.students.find({"marks":{$in:[65,70]}})
+
+db.student.update({"firstname":"Gajendran"}, {$set:{cgpa:8.875}}
+
+db.student.remove({"lastname":"G"})
+
+db.student.find({},{"cgpa":1, _id:0})  //projection
+
+db.students.aggregate([{$group: {_id: "$gender", sumval : {$sum: "$marks"}}} ])
