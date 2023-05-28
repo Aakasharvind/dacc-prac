@@ -74,3 +74,61 @@ REPLICATION
   db.getMongo().setReadPref("primary")
 
   rs.initiate(rsconf);
+  
+  
+  
+  
+  
+  
+  SHARDING
+  
+  cd Desktop
+  mkdir -p data/configdb
+  
+  mongod --configsvr --replSet config --dbPath data/configdb
+  mongosh --port 27019
+  rs.initiate()
+  rs.status()
+  
+  cd data
+  mkdir db
+  mkdir db2
+  
+  
+  mongod --shardsvr --replSet shard1 --dbPath data/db --port 27010
+  mongosh --port 27010
+  rs.initiate()
+  rs.status()
+  
+  
+  
+  mongo --shardsvr --replSet shard2 --dbPath data/db2 --port 27011
+  mongosh --port 27011
+  rs.initiate()
+  rs.status()
+  
+  
+  mongos --configdb config/127.0.0.1:27019
+  
+  
+  mongosh
+  
+  
+  sh.status()
+  sh.addShard("shard1/localhost:27010")
+  sh.addShard("shard2/localhost:27011")
+  sh.enableSharding("populations")
+  sh.shardCollection("population.cities",{"country":"hashed"});
+  
+  use populations
+  
+  //INSERT DATA INTO POPULATION.cities
+  
+  db.cities.insertMany([  { },{ },{ } ]);
+  
+  
+  
+  db.cities.getShardDistribution()
+  db.cities.find().explain()
+db.cities.find({"continent":"europe"}).explain()
+db.cities.find({"country" : "India"}).explain()
