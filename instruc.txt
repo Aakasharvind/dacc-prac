@@ -271,3 +271,62 @@ show tables;
 
 
 bin/hive  (Start hive)
+
+
+
+
+
+
+HIVE CRUD:
+
+CREATE TABLE products (
+product_id INT,
+product_name STRING,
+price DOUBLE,
+quantity INT
+);
+
+INSERT INTO TABLE products
+VALUES
+(1, 'Shirt', 29.99, 100),
+(2, 'Jeans', 49.99, 50),
+(3, 'Shoes', 79.99, 20),
+(4, 'Hat', 14.99, 75),
+(5, 'Socks', 4.99, 200);
+
+
+
+Select product_id,sum(quantity) from products group by product_id;
+
+(UPDATE)
+
+INSERT OVERWRITE TABLE products
+SELECT
+CASE WHEN product_id = 1 THEN product_id ELSE product_id END,
+CASE WHEN product_id = 1 THEN 'New Shirt' ELSE product_name END,
+CASE WHEN product_id = 1 THEN 39.99 ELSE price END,
+CASE WHEN product_id = 1 THEN quantity ELSE quantity END
+FROM products;
+
+
+INSERT OVERWRITE TABLE inventory
+SELECT
+    product_id,
+    product_name,
+    CASE
+        WHEN product_name = 'Product A' THEN quantity + 1
+        ELSE quantity
+    END AS quantity,
+    price
+FROM inventory;
+
+
+
+(DELETE)
+
+INSERT OVERWRITE TABLE products
+SELECT * FROM products
+WHERE product_id <> 5;
+
+
+
