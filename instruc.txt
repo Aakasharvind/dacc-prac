@@ -117,6 +117,10 @@ REPLICATION
   sh.status()
   sh.addShard("shard1/localhost:27010")
   sh.addShard("shard2/localhost:27011")
+  
+  // TO check the number of shards we can write:    db.adminCommand({listShards:1})
+  
+  
   sh.enableSharding("populations")
   sh.shardCollection("population.cities",{"country":"hashed"});
   
@@ -132,3 +136,91 @@ REPLICATION
   db.cities.find().explain()
 db.cities.find({"continent":"europe"}).explain()
 db.cities.find({"country" : "India"}).explain()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+HADOOP INSTALLATION:
+
+(Download Hadoop & java)
+curl https://dlcdn.apache.org/hadoop/common/hadoop-3.3.5/hadoop-3.3.5.tar.gz > hadoop
+
+tar -xzvf hadoop
+(Set the path in .bashrc file)
+export JAVA_HOME=/user/aakashls/jdk1.8.0_202
+
+(MODIFY the configuration files:)
+
+etc/hadoop/core-site.xml
+<property>
+<name>fs.default.name</name>
+<value>hdfs://localhost:50000</value>
+</property>
+
+
+
+
+etc/hadoop/yarn-site.xml
+<property>
+<name>yarn.nodemanager.aux-services</name>
+<value>mapreduce_shuffle</value>
+</property>
+<property>
+<name>yarn.nodemanager.aux-services.mapreduce.shuffle.class</name>
+<value>org.apache.hadoop.mapred.ShuffleHandler</value>
+</property>
+<property>
+<description>The hostname of the RM.</description>
+<name>yarn.resourcemanager.hostname</name>
+<value>localhost</value>
+</property>
+<property>
+
+<description>The address of the applications manager interface in the RM.</description>
+<name>yarn.resourcemanager.address</name>
+<value>localhost:8032</value>
+</property>
+
+
+
+
+
+etc/hadoop/hdfs-site.xml
+
+<property>
+<name>dfs.namenode.name.dir</name>
+<value>/home/aakashls/hadoop-dir/namenode-dir</value>
+</property>
+<property>
+<name>dfs.datanode.data.dir</name>
+<value>/home/aakashls/hadoop-dir/datanode-dir</value>
+</property>
+
+
+
+
+etc/hadoop/mapred-site.xml
+<property>
+<name>mapreduce.framework.name</name>
+<value>yarn</value>
+</property>
+
+
+
+
+Enter the java path in  hadoop-env, mapred-env ,yarn-env files
+
+Start all hadoop related services
+sbin/start-all.sh
+
+
