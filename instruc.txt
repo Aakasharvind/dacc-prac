@@ -329,4 +329,13 @@ SELECT * FROM products
 WHERE product_id <> 5;
 
 
+OR
+
+
+ALTER TABLE inventory DROP PARTITION (product_id = 5);
+
+
+
+
+
 
