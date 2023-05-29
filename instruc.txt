@@ -224,3 +224,50 @@ Start all hadoop related services
 sbin/start-all.sh
 
 
+
+HIVE INSTALLATION
+
+
+Modify hadoop file to enable MapReduce
+
+/etc/hadoop/mapred-site.xml
+<property>
+<name>yarn.app.mapreduce.am.env</name>
+<value>HADOOP_MAPRED_HOME=${full path of your hadoop distribution directory}</value>
+</property>
+<property>
+<name>mapreduce.map.env</name>
+<value>HADOOP_MAPRED_HOME=${full path of your hadoop distribution directory}</value>
+</property>
+<property>
+<name>mapreduce.reduce.env</name>
+<value>HADOOP_MAPRED_HOME=${full path of your hadoop distribution directory}</value>
+</property>
+
+
+
+
+(Download mysql for metastore)
+sudo apt install mysql-server
+
+
+(Download Hive)
+curl https://dlcdn.apache.org/hive/hive-2.3.9/apache-hive-2.3.9-bin.tar.gz > apache-hive-2.3.9-bin.tar.gz
+tar -xzf apache-hive-2.3.9-bin.tar.gz
+
+
+
+(Create the hive-site.xml file and configure it )
+
+(Create the metastore database in mysql)
+bin/schematool -dbType mysql -initSchema
+
+
+(View metadata in mysql)
+mysql -u root -p
+show databases;
+use metastore;
+show tables;
+
+
+bin/hive  (Start hive)
