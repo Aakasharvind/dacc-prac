@@ -335,6 +335,51 @@ OR
 ALTER TABLE inventory DROP PARTITION (product_id = 5);
 
 
+SELECT product_category, SUM(quantity) AS total_quantity
+FROM inventory
+GROUP BY product_category;
+
+
+
+
+
+
+JOIN IN MONGODB
+
+db.inventory.aggregate([
+  {
+    $lookup: {
+      from: 'products',
+      localField: 'product_id',
+      foreignField: 'product_id',
+      as: 'product_info'
+    }
+  }
+]);
+
+(From pdts table see where it matches prdtid with inventory table, and retrive the rows)
+
+
+
+db.orders.aggregate([
+  {
+    $lookup: {
+      from: 'customers',
+      localField: 'customer_id',
+      foreignField: 'customer_id',
+      as: 'customer_info'
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      'customer_info.customer_id': 1,
+      'customer_info.customer_name': 1,
+      total_amount: 1
+    }
+  }
+]);
+
 
 
 
